@@ -9,7 +9,7 @@ Microservice for stateless token generation and renewal.
 ## Internal API
 | API URI  | Description | Consumes | Produces |
 | ------------- | ------------- | ------------- | ------------- |
-| `GET /refresh_token`  | Creates a new ∞ refresh token and complimentary access token. | `UserObj` | `TokenPair` |
+| `GET /refresh_token`  | Creates a new ∞ refresh token and complimentary access token. | [`UserObj`](#userobj) | `TokenPair` |
 
 ## Objects
 ### Refresh Token
