@@ -13,8 +13,8 @@ Microservice for stateless token generation and renewal.
 
 ## Objects
 ### Refresh Token
-The refresh token stores just enough data to create an access token. The refresh and access tokens are known to be
-different by the `role` key in the payload.
+The refresh token stores just enough data to create an access token, and are passed as a header to the refresh endpoint.
+The refresh and access tokens are known to be different by the `role` key in the payload:
 ```
 {
     "user_id": x,
