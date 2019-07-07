@@ -17,6 +17,7 @@
     <properties>
         <java.version>11</java.version>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+        <maven.surefire.version>3.0.0-M1</maven.surefire.version>
     </properties>
 
     <dependencies>
@@ -62,6 +63,15 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Required for Junit5 Test running -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.version}</version>
+                <configuration>
+                    <reportsDirectory>test-results/</reportsDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </build>
