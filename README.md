@@ -9,7 +9,7 @@ Microservice for stateless token generation and renewal.
 ## Internal API
 | API URI  | Description | Consumes | Produces |
 | ------------- | ------------- | ------------- | ------------- |
-| `GET /refresh_token`  | Creates a new ∞ refresh token and complimentary access token. | [`UserObj`](#userobj) | `TokenPair` |
+| `GET /refresh_token`  | Creates a new ∞ refresh token and complimentary access token. | [`UserObj`](#userobj) | [`TokenPair`](#tokenpair) |
 
 ## Objects
 ### Refresh Token
@@ -94,3 +94,7 @@ RESPONSE 200 {
     "access_token": "zzz.yyy.xxx"
 }
 ```
+
+## Up and Coming
+V1 of the Authentication service only handles token generation and refreshing. The next steps are to add the
+ability to revoke permissions and access.
