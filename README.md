@@ -1,4 +1,4 @@
-#service-authentication
+# service-authentication
 Microservice for stateless token generation and renewal.
 
 ## External API
