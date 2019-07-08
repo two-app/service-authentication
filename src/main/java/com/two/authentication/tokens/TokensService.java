@@ -20,7 +20,13 @@ public class TokensService {
             throw new BadRequestException("Both partner ID and couple ID must be provided.");
         }
 
-        return null;
+        RefreshToken refreshToken = this.createRefreshToken(userId);
+
+        if (partnerId == null) {
+            return new Tokens(refreshToken, this.createConnectToken(userId));
+        } else {
+            return new Tokens(refreshToken, this.createAccessToken(userId, partnerId, coupleId));
+        }
     }
 
     private AccessToken createAccessToken(int userId, int partnerId, int coupleId) {
