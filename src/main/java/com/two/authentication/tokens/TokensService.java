@@ -1,9 +1,6 @@
-package com.two.authentication.access;
+package com.two.authentication.tokens;
 
-import com.two.authentication.tokens.AccessToken;
-import com.two.authentication.tokens.ConnectToken;
-import com.two.authentication.tokens.RefreshToken;
-import com.two.authentication.tokens.Tokens;
+import com.two.authentication.exceptions.BadRequestException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +16,10 @@ public class TokensService {
      * @return a Tokens object.
      */
     public Tokens createTokens(int userId, Integer partnerId, Integer coupleId) {
+        if (partnerId == null && coupleId == null) {
+            throw new BadRequestException("Both partner ID and couple ID must be provided.");
+        }
+
         return null;
     }
 

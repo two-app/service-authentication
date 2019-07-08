@@ -32,7 +32,7 @@ class TokensServiceTest {
         @Test
         @DisplayName("a refresh token is generated")
         void refreshTokenGenerated() {
-            
+
         }
 
     }
