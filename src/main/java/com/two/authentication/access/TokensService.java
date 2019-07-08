@@ -1,10 +1,12 @@
 package com.two.authentication.access;
 
-import com.two.authentication.tokens.Tokens;
 import org.springframework.stereotype.Service;
 
+/**
+ *  Service to generate both a refresh token and access token.
+ */
 @Service
-public class AccessTokenService {
-    
+public class TokensService {
+
 
 }

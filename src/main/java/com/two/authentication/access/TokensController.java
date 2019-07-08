@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class AccessTokenController {
+public class TokensController {
 
     @GetMapping(path = "/tokens")
     public Tokens getTokens() {
