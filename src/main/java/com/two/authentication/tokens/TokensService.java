@@ -16,7 +16,7 @@ public class TokensService {
      * @return a Tokens object.
      */
     public Tokens createTokens(int userId, Integer partnerId, Integer coupleId) {
-        if (partnerId == null && coupleId == null) {
+        if (partnerId != null && coupleId == null) {
             throw new BadRequestException("Both partner ID and couple ID must be provided.");
         }
 
