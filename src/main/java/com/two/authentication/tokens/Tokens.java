@@ -4,21 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class Tokens {
+    private final String refreshToken;
+    private final String accessToken;
 
-    private final RefreshToken refreshToken;
-    private final AccessToken accessToken;
-    private final ConnectToken connectToken;
-
-    Tokens(RefreshToken refreshToken, AccessToken accessToken) {
+    public Tokens(String refreshToken, String accessToken) {
         this.refreshToken = refreshToken;
         this.accessToken = accessToken;
-        this.connectToken = null;
     }
-
-    Tokens(RefreshToken refreshToken, ConnectToken connectToken) {
-        this.refreshToken = refreshToken;
-        this.accessToken = null;
-        this.connectToken = connectToken;
-    }
-
 }

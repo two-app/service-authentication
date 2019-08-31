@@ -1,7 +1,6 @@
 package com.two.authentication.tokens;
 
 import com.two.authentication.exceptions.BadRequestException;
-import com.two.authentication.tokens.*;
 import dev.testbed.TestBed;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,12 +43,11 @@ class TokenServiceTest {
         @Test
         @DisplayName("with a partner id and a couple id, an access token is generated")
         void accessTokenGenerated() {
-            AccessToken accessToken = new AccessToken("", 1, 2, 3);
-            TokenService tokenService = testBuilder.whenCreateAccessTokenReturn(accessToken).build();
+            TokenService tokenService = testBuilder.whenCreateAccessTokenReturn("test").build();
 
             Tokens tokens = tokenService.createTokens(1, 2, 3);
 
-            assertThat(tokens.getAccessToken()).isEqualTo(accessToken);
+            assertThat(tokens.getAccessToken()).isEqualTo("test");
         }
 
         @Test
@@ -64,12 +62,11 @@ class TokenServiceTest {
         @Test
         @DisplayName("with no partner id, a connect token is generated")
         void connectTokenGenerated() {
-            ConnectToken connectToken = new ConnectToken("", 1, "");
-            TokenService tokenService = testBuilder.whenCreateConnectTokenReturn(connectToken).build();
+            TokenService tokenService = testBuilder.whenCreateConnectTokenReturn("test").build();
 
             Tokens tokens = tokenService.createTokens(1, null, null);
 
-            assertThat(tokens.getConnectToken()).isEqualTo(connectToken);
+            assertThat(tokens.getAccessToken()).isEqualTo("test");
         }
 
         @Test
@@ -84,12 +81,11 @@ class TokenServiceTest {
         @Test
         @DisplayName("a refresh token is generated")
         void refreshTokenGenerated() {
-            RefreshToken refreshToken = new RefreshToken("", 1);
-            TokenService tokenService = testBuilder.whenCreateRefreshTokenReturn(refreshToken).build();
+            TokenService tokenService = testBuilder.whenCreateRefreshTokenReturn("test").build();
 
             Tokens tokens = tokenService.createTokens(1, null, null);
 
-            assertThat(tokens.getRefreshToken()).isEqualTo(refreshToken);
+            assertThat(tokens.getRefreshToken()).isEqualTo("test");
         }
 
         @Test
@@ -107,17 +103,17 @@ class TokenServiceTest {
             super(TokenService.class);
         }
 
-        TestBuilder whenCreateRefreshTokenReturn(RefreshToken refreshToken) {
+        TestBuilder whenCreateRefreshTokenReturn(String refreshToken) {
             when(getDependency(RefreshTokenGenerator.class).createRefreshToken(anyInt())).thenReturn(refreshToken);
             return this;
         }
 
-        TestBuilder whenCreateAccessTokenReturn(AccessToken accessToken) {
+        TestBuilder whenCreateAccessTokenReturn(String accessToken) {
             when(getDependency(AccessTokenGenerator.class).createAccessToken(anyInt(), anyInt(), anyInt())).thenReturn(accessToken);
             return this;
         }
 
-        TestBuilder whenCreateConnectTokenReturn(ConnectToken connectToken) {
+        TestBuilder whenCreateConnectTokenReturn(String connectToken) {
             when(getDependency(AccessTokenGenerator.class).createConnectToken(anyInt())).thenReturn(connectToken);
             return this;
         }

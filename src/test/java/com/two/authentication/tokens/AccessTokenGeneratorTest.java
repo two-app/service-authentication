@@ -21,13 +21,11 @@ class AccessTokenGeneratorTest {
     @Nested
     class CreateAccessToken {
 
-        private AccessToken accessToken;
         private DecodedJWT decodedAccessToken;
 
         @BeforeEach
         void createAccessToken() {
-            this.accessToken = new TestBuilder().build().createAccessToken(1, 2, 3);
-            this.decodedAccessToken = JWT.decode(this.accessToken.getAccessToken());
+            this.decodedAccessToken = JWT.decode(new TestBuilder().build().createAccessToken(1, 2, 3));
         }
 
         @Nested
@@ -60,40 +58,18 @@ class AccessTokenGeneratorTest {
 
         }
 
-        @Nested
-        class AccessTokenObj {
-
-            @Test
-            void hasUserIdEqualToOne() {
-                assertThat(accessToken.getUserId()).isEqualTo(1);
-            }
-
-            @Test
-            void hasPartnerIdEqualToTwo() {
-                assertThat(accessToken.getPartnerId()).isEqualTo(2);
-            }
-
-            @Test
-            void hasCoupleIdEqualToThree() {
-                assertThat(accessToken.getCoupleId()).isEqualTo(3);
-            }
-
-        }
-
     }
 
     @Nested
     class CreateConnectToken {
 
         private TestBuilder testBuilder;
-        private ConnectToken connectToken;
         private DecodedJWT decodedConnectToken;
 
         @BeforeEach
         void createConnectToken() {
             this.testBuilder = new TestBuilder().whenCreateConnectCodeReturn("TestConnectCode");
-            this.connectToken = this.testBuilder.build().createConnectToken(1);
-            this.decodedConnectToken = JWT.decode(this.connectToken.getConnectToken());
+            this.decodedConnectToken = JWT.decode(this.testBuilder.build().createConnectToken(1));
         }
 
         @Nested
@@ -119,21 +95,6 @@ class AccessTokenGeneratorTest {
             void hasExpirationWithinTwoMinutes() {
                 assertThat(decodedConnectToken.getExpiresAt()).isInSameMinuteAs(Date.from(Instant.now().plus(2, ChronoUnit.MINUTES)));
             }
-        }
-
-        @Nested
-        class ConnectTokenObj {
-
-            @Test
-            void hasUserIdEqualToOne() {
-                assertThat(connectToken.getUserId()).isEqualTo(1);
-            }
-
-            @Test
-            void hasCorrectConnectCode() {
-                assertThat(connectToken.getConnectCode()).isEqualTo("TestConnectCode");
-            }
-
         }
     }
 

@@ -30,7 +30,7 @@ public class TokenService {
             throw new BadRequestException("Both partner ID and couple ID must be provided.");
         }
 
-        RefreshToken refreshToken = this.refreshTokenGenerator.createRefreshToken(userId);
+        String refreshToken = this.refreshTokenGenerator.createRefreshToken(userId);
 
         if (partnerId == null) {
             return new Tokens(refreshToken, this.accessTokenGenerator.createConnectToken(userId));

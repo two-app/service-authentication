@@ -8,12 +8,10 @@ public class RefreshTokenGenerator {
 
     private final Algorithm algorithm = Algorithm.HMAC256("NOT_THE_REAL_SECRET_REFRESH");
 
-    public RefreshToken createRefreshToken(int userId) {
-        String token = TwoToken.withoutExpiration()
+    String createRefreshToken(int userId) {
+        return TwoToken.withoutExpiration()
                 .withClaim("role", "REFRESH")
                 .withClaim("userId", userId)
                 .sign(algorithm);
-
-        return new RefreshToken(token, userId);
     }
 }

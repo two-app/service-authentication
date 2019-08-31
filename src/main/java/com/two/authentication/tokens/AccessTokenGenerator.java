@@ -16,27 +16,23 @@ public class AccessTokenGenerator {
         this.hashids = hashids;
     }
 
-    public AccessToken createAccessToken(int userId, int partnerId, int coupleId) {
-        String token = TwoToken.withExpiration()
+    String createAccessToken(int userId, int partnerId, int coupleId) {
+        return TwoToken.withExpiration()
                 .withClaim("role", "ACCESS")
                 .withClaim("userId", userId)
                 .withClaim("partnerId", partnerId)
                 .withClaim("coupleId", coupleId)
                 .sign(algorithm);
-
-        return new AccessToken(token, userId, partnerId, coupleId);
     }
 
-    public ConnectToken createConnectToken(int userId) {
+    String createConnectToken(int userId) {
         String connectCode = this.hashids.encode(userId);
 
-        String token = TwoToken.withExpiration()
+        return TwoToken.withExpiration()
                 .withClaim("role", "ACCESS")
                 .withClaim("userId", userId)
                 .withClaim("connectCode", connectCode)
                 .sign(algorithm);
-
-        return new ConnectToken(token, userId, connectCode);
     }
 
 }

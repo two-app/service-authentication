@@ -14,20 +14,20 @@ import javax.validation.constraints.Min;
 @Validated
 public class TokensController {
 
-//    private final TokenService tokenService;
-//
-//    @Autowired
-//    public TokensController(TokenService tokenService) {
-//        this.tokenService = tokenService;
-//    }
+    private final TokenService tokenService;
+
+    @Autowired
+    public TokensController(TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
 
     @GetMapping(path="/tokens")
-    public void getTokens(
+    public Tokens getTokens(
             @RequestHeader("userId") @Min(value = 1, message = "User ID must be greater than 0.") int userId,
             @RequestHeader(value = "partnerId", required = false) @Min(value = 1, message = "Partner ID must be greater than 0.") Integer partnerId,
             @RequestHeader(value = "coupleId", required = false) @Min(value = 1, message = "Couple ID must be greater than 0.") Integer coupleId
     ) {
-//        Tokens tokens = this.tokenService.createTokens(userId, partnerId, coupleId);
+        return this.tokenService.createTokens(userId, partnerId, coupleId);
     }
 
 }
