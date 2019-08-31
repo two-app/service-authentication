@@ -24,6 +24,7 @@ public class AccessTokenGenerator {
     public AccessToken createAccessToken(int userId, int partnerId, int coupleId) {
         String token = JWT.create()
                 .withIssuer("two")
+                .withClaim("role", "ACCESS")
                 .withClaim("userId", userId)
                 .withClaim("partnerId", partnerId)
                 .withClaim("coupleId", coupleId)
@@ -38,6 +39,7 @@ public class AccessTokenGenerator {
 
         String token = JWT.create()
                 .withIssuer("two")
+                .withClaim("role", "ACCESS")
                 .withClaim("userId", userId)
                 .withClaim("connectCode", connectCode)
                 .withExpiresAt(Date.from(Instant.now().plus(2, ChronoUnit.MINUTES)))
