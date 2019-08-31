@@ -3,7 +3,7 @@ package com.two.authentication.tokens;
 import lombok.Value;
 
 @Value
-class AccessToken {
+public class AccessToken {
 
     private final String role = "ACCESS";
     private final String accessToken;

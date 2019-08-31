@@ -3,7 +3,7 @@ package com.two.authentication.tokens;
 import lombok.Value;
 
 @Value
-class RefreshToken {
+public class RefreshToken {
 
     private final String role = "REFRESH";
     private final String refreshToken;
