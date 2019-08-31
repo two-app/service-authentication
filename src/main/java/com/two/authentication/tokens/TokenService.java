@@ -22,7 +22,7 @@ public class TokenService {
     /**
      * @param userId    who the token will belong to.
      * @param partnerId optional partner id. If this is not present the user will receive a connect token.
-     * @param coupleId  optional couple id, compulsory if the partner id is present.
+     * @param coupleId  optional couple id, compulsory if the partner id is present (and vice-versa).
      * @return a Tokens object.
      */
     public Tokens createTokens(int userId, Integer partnerId, Integer coupleId) {
