@@ -21,6 +21,9 @@
         <maven.surefire.version>3.0.0-M1</maven.surefire.version>
         <assertj.version>3.11.1</assertj.version>
         <junit.jupiter.version>5.3.2</junit.jupiter.version>
+        <database.root.url>jdbc:mysql://localhost:3306</database.root.url>
+        <database.user>root</database.user>
+        <database.schema>authentication</database.schema>
     </properties>
 
     <dependencies>
@@ -113,6 +116,68 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>6.0.1</version>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <url>${database.root.url}</url>
+                    <user>${database.user}</user>
+                    <schemas>${database.schema}</schemas>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>3.11.7</version>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>8.0.13</version>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <jdbc>
+                        <driver>com.mysql.jdbc.Driver</driver>
+                        <url>${database.root.url}/${database.schema}</url>
+                        <user>${database.user}</user>
+                    </jdbc>
+                    <generator>
+                        <database>
+                            <name>org.jooq.meta.mysql.MySQLDatabase</name>
+                            <includes>.*</includes>
+                            <inputSchema>${database.schema}</inputSchema>
+                        </database>
+                        <target>
+                            <directory>src/main/java/generated</directory>
+                        </target>
+                    </generator>
+                </configuration>
             </plugin>
 
             <!-- Required for Junit5 Test running -->
