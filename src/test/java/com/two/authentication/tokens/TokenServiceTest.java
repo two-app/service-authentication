@@ -17,17 +17,17 @@ class TokenServiceTest {
     @Nested
     class CreateTokens {
 
-        private TestBuilder testBuilder;
+        private TestBuilder tb;
 
         @BeforeEach
         void createTokenService() {
-            this.testBuilder = new TestBuilder();
+            this.tb = new TestBuilder();
         }
 
         @Test
         @DisplayName("with a partner id but no couple id a BadRequestException is thrown")
         void invalidPartnerCombo() {
-            assertThatThrownBy(() -> testBuilder.build().createTokens(1, 2, null))
+            assertThatThrownBy(() -> tb.build().createTokens(1, 2, null))
                     .isInstanceOf(BadRequestException.class)
                     .hasMessageContaining("Both partner ID and couple ID must be provided.");
         }
@@ -35,7 +35,7 @@ class TokenServiceTest {
         @Test
         @DisplayName("with a couple id but no partner id a BadRequestException is thrown")
         void invalidCoupleCombo() {
-            assertThatThrownBy(() -> testBuilder.build().createTokens(1, null, 3))
+            assertThatThrownBy(() -> tb.build().createTokens(1, null, 3))
                     .isInstanceOf(BadRequestException.class)
                     .hasMessageContaining("Both partner ID and couple ID must be provided.");
         }
@@ -43,7 +43,7 @@ class TokenServiceTest {
         @Test
         @DisplayName("with a partner id and a couple id, an access token is generated")
         void accessTokenGenerated() {
-            TokenService tokenService = testBuilder.whenCreateAccessTokenReturn("test").build();
+            TokenService tokenService = tb.whenCreateAccessTokenReturn("test").build();
 
             Tokens tokens = tokenService.createTokens(1, 2, 3);
 
@@ -53,16 +53,16 @@ class TokenServiceTest {
         @Test
         @DisplayName("with a partner id and a couple id, an access token is generated using the correct generators")
         void accessTokenGeneratorsCalledCorrectly() {
-            testBuilder.build().createTokens(1, 2, 3);
+            tb.build().createTokens(1, 2, 3);
 
-            verify(testBuilder.getDependency(AccessTokenGenerator.class)).createAccessToken(1, 2, 3);
-            verify(testBuilder.getDependency(AccessTokenGenerator.class), never()).createConnectToken(anyInt());
+            verify(tb.getDependency(AccessTokenGenerator.class)).createAccessToken(1, 2, 3);
+            verify(tb.getDependency(AccessTokenGenerator.class), never()).createConnectToken(anyInt());
         }
 
         @Test
         @DisplayName("with no partner id, a connect token is generated")
         void connectTokenGenerated() {
-            TokenService tokenService = testBuilder.whenCreateConnectTokenReturn("test").build();
+            TokenService tokenService = tb.whenCreateConnectTokenReturn("test").build();
 
             Tokens tokens = tokenService.createTokens(1, null, null);
 
@@ -72,16 +72,16 @@ class TokenServiceTest {
         @Test
         @DisplayName("with no partner id, a connect token is generated using the correct generators")
         void connectTokenGeneratorsCalledCorrectly() {
-            testBuilder.build().createTokens(1, null, null);
+            tb.build().createTokens(1, null, null);
 
-            verify(testBuilder.getDependency(AccessTokenGenerator.class)).createConnectToken(1);
-            verify(testBuilder.getDependency(AccessTokenGenerator.class), never()).createAccessToken(anyInt(), anyInt(), anyInt());
+            verify(tb.getDependency(AccessTokenGenerator.class)).createConnectToken(1);
+            verify(tb.getDependency(AccessTokenGenerator.class), never()).createAccessToken(anyInt(), anyInt(), anyInt());
         }
 
         @Test
         @DisplayName("a refresh token is generated")
         void refreshTokenGenerated() {
-            TokenService tokenService = testBuilder.whenCreateRefreshTokenReturn("test").build();
+            TokenService tokenService = tb.whenCreateRefreshTokenReturn("test").build();
 
             Tokens tokens = tokenService.createTokens(1, null, null);
 
@@ -91,9 +91,9 @@ class TokenServiceTest {
         @Test
         @DisplayName("a refresh token is generated using the correct generators")
         void refreshTokenGeneratorsCalledCorrectly() {
-            testBuilder.build().createTokens(1, 2, 3);
+            tb.build().createTokens(1, 2, 3);
 
-            verify(testBuilder.getDependency(RefreshTokenGenerator.class)).createRefreshToken(1);
+            verify(tb.getDependency(RefreshTokenGenerator.class)).createRefreshToken(1);
         }
 
     }

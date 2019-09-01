@@ -63,13 +63,13 @@ class AccessTokenGeneratorTest {
     @Nested
     class CreateConnectToken {
 
-        private TestBuilder testBuilder;
+        private TestBuilder tb;
         private DecodedJWT decodedConnectToken;
 
         @BeforeEach
         void createConnectToken() {
-            this.testBuilder = new TestBuilder().whenCreateConnectCodeReturn("TestConnectCode");
-            this.decodedConnectToken = JWT.decode(this.testBuilder.build().createConnectToken(1));
+            this.tb = new TestBuilder().whenCreateConnectCodeReturn("TestConnectCode");
+            this.decodedConnectToken = JWT.decode(this.tb.build().createConnectToken(1));
         }
 
         @Nested
