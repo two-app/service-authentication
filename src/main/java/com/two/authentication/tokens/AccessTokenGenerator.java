@@ -1,14 +1,9 @@
 package com.two.authentication.tokens;
 
-import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.hashids.Hashids;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
 @Component
 public class AccessTokenGenerator {
@@ -21,29 +16,30 @@ public class AccessTokenGenerator {
         this.hashids = hashids;
     }
 
-    public AccessToken createAccessToken(int userId, int partnerId, int coupleId) {
-        String token = JWT.create()
-                .withIssuer("two")
+    /**
+     * @return an access token holding the uid, pid, and cid. Two minute expiry.
+     */
+    String createAccessToken(int userId, int partnerId, int coupleId) {
+        return TwoToken.withExpiration()
+                .withClaim("role", "ACCESS")
                 .withClaim("userId", userId)
                 .withClaim("partnerId", partnerId)
                 .withClaim("coupleId", coupleId)
-                .withExpiresAt(Date.from(Instant.now().plus(2, ChronoUnit.MINUTES)))
                 .sign(algorithm);
-
-        return new AccessToken(token, userId, partnerId, coupleId);
     }
 
-    public ConnectToken createConnectToken(int userId) {
+    /**
+     * @param userId to generate the connect code for.
+     * @return an connect token, that is used as an access token. Holds the uid and their generated connect code.
+     */
+    String createConnectToken(int userId) {
         String connectCode = this.hashids.encode(userId);
 
-        String token = JWT.create()
-                .withIssuer("two")
+        return TwoToken.withExpiration()
+                .withClaim("role", "ACCESS")
                 .withClaim("userId", userId)
                 .withClaim("connectCode", connectCode)
-                .withExpiresAt(Date.from(Instant.now().plus(2, ChronoUnit.MINUTES)))
                 .sign(algorithm);
-
-        return new ConnectToken(token, userId, connectCode);
     }
 
 }
