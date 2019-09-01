@@ -174,7 +174,7 @@
                             <inputSchema>${database.schema}</inputSchema>
                         </database>
                         <target>
-                            <directory>src/main/java/generated</directory>
+                            <directory>src/main/java</directory>
                         </target>
                     </generator>
                 </configuration>
