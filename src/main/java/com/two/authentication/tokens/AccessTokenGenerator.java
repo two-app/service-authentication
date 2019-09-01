@@ -16,6 +16,9 @@ public class AccessTokenGenerator {
         this.hashids = hashids;
     }
 
+    /**
+     * @return an access token holding the uid, pid, and cid. Two minute expiry.
+     */
     String createAccessToken(int userId, int partnerId, int coupleId) {
         return TwoToken.withExpiration()
                 .withClaim("role", "ACCESS")
@@ -25,6 +28,10 @@ public class AccessTokenGenerator {
                 .sign(algorithm);
     }
 
+    /**
+     * @param userId to generate the connect code for.
+     * @return an connect token, that is used as an access token. Holds the uid and their generated connect code.
+     */
     String createConnectToken(int userId) {
         String connectCode = this.hashids.encode(userId);
 

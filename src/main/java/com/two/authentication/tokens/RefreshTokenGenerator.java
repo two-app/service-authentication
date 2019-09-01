@@ -8,6 +8,9 @@ public class RefreshTokenGenerator {
 
     private final Algorithm algorithm = Algorithm.HMAC256("NOT_THE_REAL_SECRET_REFRESH");
 
+    /**
+     * @return a refresh token holding the uid. This token has no expiration date.
+     */
     String createRefreshToken(int userId) {
         return TwoToken.withoutExpiration()
                 .withClaim("role", "REFRESH")

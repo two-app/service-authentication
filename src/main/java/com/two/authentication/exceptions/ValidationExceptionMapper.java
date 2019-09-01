@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ValidationExceptionMapper {
 
+    /**
+     * @param e Constraint Violation Exception, typically raised by JavaX Validation Constraints.
+     * @return a list of user-friendly errors, extracted from each constraint violation.
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse error(ConstraintViolationException e) {
