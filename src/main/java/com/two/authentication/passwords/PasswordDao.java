@@ -19,7 +19,7 @@ public class PasswordDao {
     }
 
     /**
-     * @return the password looked up by user ID. Empty optional if the user ID record does not exist.
+     * @return the password looked up by UID. Empty optional if the UID does not exist.
      */
     Optional<String> getPassword(int uid) {
         return this.ctx.select(USERS.PASSWORD)

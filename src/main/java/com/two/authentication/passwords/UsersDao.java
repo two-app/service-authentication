@@ -18,12 +18,11 @@ public class UsersDao {
     }
 
     /**
-     * <b>Warning: Do not use this method without going via a service that encrypts the password.</b>
-     * Do not, under any circumstances, store a non-encrypted password.
+     * <b>Warning: Do not use this method without going via a service that encodes the password.</b>
+     * Do not, under any circumstances, store a non-encoded password.
      *
-     * @see PasswordService for encryption.
-     * @param uid the users ID.
-     * @param encodedPassword the users password, which must be encrypted.
+     * @see PasswordService for encoding.
+     * @param encodedPassword the users password, which must be encoded.
      */
     void createUser(int uid, String encodedPassword) {
         UsersRecord usersRecord = ctx.newRecord(USERS);
