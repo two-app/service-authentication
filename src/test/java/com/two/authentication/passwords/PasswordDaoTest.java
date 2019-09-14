@@ -1,6 +1,7 @@
 package com.two.authentication.passwords;
 
 
+import com.two.authentication.users.UsersDao;
 import org.flywaydb.core.Flyway;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;

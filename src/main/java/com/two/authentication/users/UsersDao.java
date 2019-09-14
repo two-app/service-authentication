@@ -1,5 +1,6 @@
-package com.two.authentication.passwords;
+package com.two.authentication.users;
 
+import com.two.authentication.passwords.PasswordService;
 import org.jooq.DSLContext;
 import org.jooq.generated.tables.records.UsersRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ public class UsersDao {
     private final DSLContext ctx;
 
     @Autowired
-    UsersDao(DSLContext ctx) {
+    public UsersDao(DSLContext ctx) {
         this.ctx = ctx;
     }
 
@@ -24,7 +25,7 @@ public class UsersDao {
      * @see PasswordService for encoding.
      * @param encodedPassword the users password, which must be encoded.
      */
-    void createUser(int uid, String encodedPassword) {
+    public void createUser(int uid, String encodedPassword) {
         UsersRecord usersRecord = ctx.newRecord(USERS);
         usersRecord.setUid(uid);
         usersRecord.setPassword(encodedPassword);
