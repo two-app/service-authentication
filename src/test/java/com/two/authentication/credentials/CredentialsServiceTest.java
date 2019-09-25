@@ -1,7 +1,6 @@
 package com.two.authentication.credentials;
 
 import com.two.authentication.exceptions.BadRequestException;
-import com.two.authentication.passwords.PasswordService;
 import com.two.http_api.model.User;
 import dev.testbed.TestBed;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -36,7 +36,7 @@ class CredentialsServiceTest {
 
             credentialsService.storeCredentials(new User.Credentials(1, "raw"));
 
-            verify(tb.getDependency(PasswordService.class)).encodePassword("raw");
+            verify(tb.getDependency(PasswordEncoder.class)).encode("raw");
             verify(tb.getDependency(CredentialsDao.class)).storeCredentials(new EncodedCredentials(1, "encoded"));
         }
 
@@ -71,7 +71,7 @@ class CredentialsServiceTest {
         }
 
         TestBuilder whenEncodePasswordReturn(String encodedPassword) {
-            when(getDependency(PasswordService.class).encodePassword(anyString())).thenReturn(encodedPassword);
+            when(getDependency(PasswordEncoder.class).encode(anyString())).thenReturn(encodedPassword);
             return this;
         }
 
