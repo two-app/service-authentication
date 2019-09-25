@@ -14,6 +14,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.jooq.generated.Tables.CREDENTIALS;
@@ -43,12 +45,18 @@ class CredentialsDaoTest {
     @Test
     @DisplayName("it should store the credentials")
     void storesCredentials() {
-        this.credentialsDao.storeCredentials(new EncodedCredentials(1, "test-encoded-password"));
+        EncodedCredentials encodedCredentials = new EncodedCredentials(1, "test-encoded-password");
+        this.credentialsDao.storeCredentials(encodedCredentials);
 
-        CredentialsRecord record = ctx.selectFrom(CREDENTIALS).where(CREDENTIALS.UID.eq(1)).fetchOne();
+        Optional<EncodedCredentials> record = this.credentialsDao.getCredentials(1);
 
-        assertThat(record.getUid()).isEqualTo(1);
-        assertThat(record.getPassword()).isEqualTo("test-encoded-password");
+        assertThat(record).isPresent().contains(encodedCredentials);
+    }
+
+    @Test
+    @DisplayName("it should return an empty optional when getting unknown credentials")
+    void unknownCredentialsReturnsEmptyOptional() {
+        assertThat(this.credentialsDao.getCredentials(3)).isEmpty();
     }
 
     @Test
