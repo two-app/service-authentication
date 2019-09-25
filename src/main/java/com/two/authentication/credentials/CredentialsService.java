@@ -21,7 +21,11 @@ public class CredentialsService {
         this.credentialsDao = credentialsDao;
     }
 
-    public void storeCredentials(User.Credentials credentials) {
+    /**
+     * @param credentials to encode and store.
+     * @throws BadRequestException if the credentials uid already exists.
+     */
+    public void storeCredentials(User.Credentials credentials) throws BadRequestException {
         String encodedPassword = this.passwordEncoder.encode(credentials.getRawPassword());
         EncodedCredentials encodedCredentials = new EncodedCredentials(credentials.getUid(), encodedPassword);
 
