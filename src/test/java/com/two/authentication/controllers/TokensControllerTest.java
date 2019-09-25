@@ -1,7 +1,7 @@
 package com.two.authentication.controllers;
 
 import com.two.authentication.tokens.TokenService;
-import com.two.authentication.tokens.Tokens;
+import com.two.http_api.model.Tokens;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

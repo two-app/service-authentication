@@ -1,7 +1,7 @@
 package com.two.authentication.controllers;
 
 import com.two.authentication.tokens.TokenService;
-import com.two.authentication.tokens.Tokens;
+import com.two.http_api.model.Tokens;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;

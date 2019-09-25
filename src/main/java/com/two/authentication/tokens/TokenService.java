@@ -1,6 +1,7 @@
 package com.two.authentication.tokens;
 
 import com.two.authentication.exceptions.BadRequestException;
+import com.two.http_api.model.Tokens;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

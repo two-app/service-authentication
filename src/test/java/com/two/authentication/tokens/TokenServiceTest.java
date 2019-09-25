@@ -1,6 +1,7 @@
 package com.two.authentication.tokens;
 
 import com.two.authentication.exceptions.BadRequestException;
+import com.two.http_api.model.Tokens;
 import dev.testbed.TestBed;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
