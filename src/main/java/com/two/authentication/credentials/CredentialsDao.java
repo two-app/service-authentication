@@ -4,6 +4,7 @@ import com.two.authentication.passwords.PasswordService;
 import org.jooq.DSLContext;
 import org.jooq.generated.tables.records.CredentialsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -26,8 +27,9 @@ public class CredentialsDao {
      *
      * @param encodedCredentials the credentials containing the encoded password.
      * @see PasswordService for encoding.
+     * @throws DuplicateKeyException if a record with the same uid exists.
      */
-    void storeCredentials(EncodedCredentials encodedCredentials) {
+    void storeCredentials(EncodedCredentials encodedCredentials) throws DuplicateKeyException {
         CredentialsRecord record = ctx.newRecord(CREDENTIALS);
         record.setUid(encodedCredentials.getUid());
         record.setPassword(encodedCredentials.getEncodedPassword());
