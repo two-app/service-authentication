@@ -24,7 +24,6 @@ public class CredentialsDao {
      *
      * @param encodedCredentials the credentials containing the encoded password.
      * @see PasswordService for encoding.
-     * // TODO: Look into the uniqueness of the UID, and the exception that is thrown
      */
     void storeCredentials(EncodedCredentials encodedCredentials) {
         CredentialsRecord record = ctx.newRecord(CREDENTIALS);
