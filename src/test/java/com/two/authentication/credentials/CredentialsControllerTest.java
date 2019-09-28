@@ -22,9 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = com.two.authentication.credentials.CredentialsController.class)
+@WebMvcTest(controllers = CredentialsController.class)
 @AutoConfigureMockMvc
-class CredentialsController {
+public class CredentialsControllerTest {
 
     private final String path = "/credentials";
     private final ObjectMapper m = new ObjectMapper();
@@ -63,8 +63,7 @@ class CredentialsController {
     @Test
     @DisplayName("it should return a bad request if the credentials are missing from the request")
     void credentialsMissing() throws Exception {
-        mvc.perform(post(path))
-                .andExpect(status().isBadRequest());
+        mvc.perform(post(path)).andExpect(status().isBadRequest());
     }
 
 }
