@@ -31,7 +31,6 @@ public class ValidationExceptionMapper {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse error(MethodArgumentNotValidException e) {
-        System.out.println("REACHED");
         return new ErrorResponse(
                 e.getBindingResult().getAllErrors().stream()
                         .map(DefaultMessageSourceResolvable::getDefaultMessage)
