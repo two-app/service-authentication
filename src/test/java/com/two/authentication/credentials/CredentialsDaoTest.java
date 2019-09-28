@@ -2,7 +2,6 @@ package com.two.authentication.credentials;
 
 import org.flywaydb.core.Flyway;
 import org.jooq.DSLContext;
-import org.jooq.generated.tables.records.CredentialsRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.jooq.generated.Tables.CREDENTIALS;
 
 @ExtendWith(SpringExtension.class)
 @JooqTest
@@ -46,8 +44,8 @@ class CredentialsDaoTest {
     @DisplayName("it should store the credentials")
     void storesCredentials() {
         EncodedCredentials encodedCredentials = new EncodedCredentials(1, "test-encoded-password");
-        this.credentialsDao.storeCredentials(encodedCredentials);
 
+        this.credentialsDao.storeCredentials(encodedCredentials);
         Optional<EncodedCredentials> record = this.credentialsDao.getCredentials(1);
 
         assertThat(record).isPresent().contains(encodedCredentials);
