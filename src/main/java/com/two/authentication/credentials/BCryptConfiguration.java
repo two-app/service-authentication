@@ -1,4 +1,4 @@
-package com.two.authentication.passwords;
+package com.two.authentication.credentials;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
