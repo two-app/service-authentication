@@ -28,12 +28,12 @@ public class CredentialsController implements AuthenticationServiceContract {
 
     @PostMapping("/credentials")
     @Override
-    public ResponseEntity<Tokens> storeCredentialsAndGenerateTokens(@NotNull(message = "You must provide credentials.") User.Credentials credentials) {
+    public Tokens storeCredentialsAndGenerateTokens(@NotNull(message = "You must provide credentials.") User.Credentials credentials) {
         this.userService.storeCredentials(credentials);
 
         Tokens tokens = tokenService.createTokens(credentials.getUid(), null, null);
 
-        return new ResponseEntity<>(tokens, HttpStatus.OK);
+        return tokens;
     }
 
 }
