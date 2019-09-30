@@ -1,8 +1,8 @@
 package com.two.authentication.credentials;
 
+import lombok.AllArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.generated.tables.records.CredentialsRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
@@ -11,14 +11,10 @@ import java.util.Optional;
 import static org.jooq.generated.Tables.CREDENTIALS;
 
 @Repository
+@AllArgsConstructor
 public class CredentialsDao {
 
     private final DSLContext ctx;
-
-    @Autowired
-    public CredentialsDao(DSLContext ctx) {
-        this.ctx = ctx;
-    }
 
     /**
      * <b>Warning: Do not use this method without going via a service that encodes the password.</b>
