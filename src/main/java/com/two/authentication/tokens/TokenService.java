@@ -2,23 +2,18 @@ package com.two.authentication.tokens;
 
 import com.two.authentication.exceptions.BadRequestException;
 import com.two.http_api.model.Tokens;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
  * Service to generate both a refresh token and access token.
  */
 @Service
+@AllArgsConstructor
 public class TokenService {
 
     private final RefreshTokenGenerator refreshTokenGenerator;
     private final AccessTokenGenerator accessTokenGenerator;
-
-    @Autowired
-    public TokenService(RefreshTokenGenerator refreshTokenGenerator, AccessTokenGenerator accessTokenGenerator) {
-        this.refreshTokenGenerator = refreshTokenGenerator;
-        this.accessTokenGenerator = accessTokenGenerator;
-    }
 
     /**
      * @param userId    who the token will belong to.
