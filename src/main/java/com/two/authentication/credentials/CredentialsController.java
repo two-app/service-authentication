@@ -25,7 +25,7 @@ public class CredentialsController implements AuthenticationServiceContract {
     @PostMapping("/credentials")
     @Override
     public Tokens storeCredentialsAndGenerateTokens(@NotNull(message = "You must provide credentials.") User.Credentials credentials) {
-        logger.info("Storing credentials for UID: " + credentials.getUid() + ".");
+        logger.info("Storing credentials for UID: {}.", credentials.getUid());
         credentialsService.storeCredentials(credentials);
 
         logger.info("Creating tokens with UID: {}, PID: null, and CID: null.", credentials.getUid());
