@@ -26,9 +26,9 @@ public class TokenService {
      * @throws BadRequestException if the pid or cid is provided, but the other is not present.
      */
     public Tokens createTokens(int uid, Integer pid, Integer cid) {
-        logger.info("Creating tokens for UID: '" + uid + "', PID: '" + pid + "', and CID: '" + cid + "'.");
+        logger.info("Creating tokens with UID: {}, PID: {}, and CID: {}.", uid, pid, cid);
         if ((pid != null && cid == null) || pid == null && cid != null) {
-            logger.error("Either PID or CID is present and the other is missing.");
+            logger.warn("Either PID or CID is present and the other is missing.");
             throw new BadRequestException("Both partner ID and couple ID must be provided.");
         }
 

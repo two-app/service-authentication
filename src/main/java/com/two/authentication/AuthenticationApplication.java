@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class AuthenticationApplication {
 
     public static void main(String[] args) {
+        System.setProperty("org.jooq.no-logo", "true");
         SpringApplication.run(AuthenticationApplication.class, args);
     }
 

@@ -21,7 +21,7 @@ public class BadRequestExceptionMapper {
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse error(BadRequestException e) {
-        logger.error("[400] Mapping BadRequestException to 400 BAD REQUEST.", e);
+        logger.warn("[400] Mapping BadRequestException to 400 BAD REQUEST.", e);
         return new ErrorResponse(singletonList(e.getMessage()));
     }
 

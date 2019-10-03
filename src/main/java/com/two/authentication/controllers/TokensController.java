@@ -30,10 +30,10 @@ public class TokensController {
             @RequestHeader(value = "partnerId", required = false) @Min(value = 1, message = "Partner ID must be greater than 0.") Integer pid,
             @RequestHeader(value = "coupleId", required = false) @Min(value = 1, message = "Couple ID must be greater than 0.") Integer cid
     ) {
-        logger.info("[GET] /tokens UID: '" + uid + "', PID: '" + pid + "', and CID: '" + cid + "'.");
+        logger.info("Creating tokens with UID: {}, PID: {}, and CID: {}.", uid, pid, cid);
         Tokens tokens = this.tokenService.createTokens(uid, pid, cid);
 
-        logger.info("[200] with tokens: " + tokens + ".");
+        logger.info("Responding with tokens: {}.", tokens);
         return tokens;
     }
 

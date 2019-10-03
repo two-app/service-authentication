@@ -23,7 +23,7 @@ public class AccessTokenGenerator {
      * @return an access token holding the uid, pid, and cid. Two minute expiry.
      */
     String createAccessToken(int uid, int pid, int cid) {
-        logger.info("Creating Access token with UID: '" + uid + "', PID: '" + pid + "', and CID: '" + cid + "'");
+        logger.info("Creating Access token with UID: {}, PID: {}, and CID: {}.", uid, pid, cid);
         return TwoToken.withExpiration()
                 .withClaim("role", "ACCESS")
                 .withClaim("userId", uid)
@@ -37,10 +37,9 @@ public class AccessTokenGenerator {
      * @return an connect token, that is used as an access token. Holds the uid and their generated connect code.
      */
     String createConnectToken(int uid) {
-        logger.info("Creating Connect token with UID: " + uid);
-
+        logger.info("Creating Connect token with UID: {}.", uid);
         String connectCode = this.hashids.encode(uid);
-        logger.info("Encoded UID to Connect Code: " + connectCode);
+        logger.info("Encoded UID to Connect Code: {}.", connectCode);
 
         return TwoToken.withExpiration()
                 .withClaim("role", "ACCESS")

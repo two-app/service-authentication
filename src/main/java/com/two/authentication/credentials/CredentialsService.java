@@ -32,7 +32,7 @@ public class CredentialsService {
             this.credentialsDao.storeCredentials(encodedCredentials);
             logger.info("Successfully stored credentials.");
         } catch (DuplicateKeyException e) {
-            logger.error("Failed to store credentials. UID already exists.", e);
+            logger.warn("Failed to store credentials. UID already exists.", e);
             throw new BadRequestException("This user already exists.");
         }
     }
