@@ -15,7 +15,7 @@ public class RefreshTokenGenerator {
      * @return a refresh token holding the uid. This token has no expiration date.
      */
     String createRefreshToken(int uid) {
-        logger.info("Creating Refresh token for UID: " + uid);
+        logger.info("Creating Refresh token for UID: {}.", uid);
         return TwoToken.withoutExpiration()
                 .withClaim("role", "REFRESH")
                 .withClaim("userId", uid)

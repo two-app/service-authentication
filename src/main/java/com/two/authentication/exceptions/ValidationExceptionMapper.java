@@ -25,7 +25,7 @@ public class ValidationExceptionMapper {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse error(ConstraintViolationException e) {
-        logger.error("[400] Converting multiple Constraint Violations into 400 BAD REQUEST.", e);
+        logger.warn("[400] Converting multiple Constraint Violations into 400 BAD REQUEST.", e);
         return new ErrorResponse(
                 e.getConstraintViolations().stream()
                         .map(ConstraintViolation::getMessage)
@@ -36,7 +36,7 @@ public class ValidationExceptionMapper {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse error(MethodArgumentNotValidException e) {
-        logger.error("[400] Converting singular Constraint Violation into 400 BAD REQUEST.", e);
+        logger.warn("[400] Converting singular Constraint Violation into 400 BAD REQUEST.", e);
         return new ErrorResponse(
                 e.getBindingResult().getAllErrors().stream()
                         .map(DefaultMessageSourceResolvable::getDefaultMessage)
