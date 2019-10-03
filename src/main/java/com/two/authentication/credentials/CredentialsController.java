@@ -31,7 +31,7 @@ public class CredentialsController implements AuthenticationServiceContract {
         logger.info("Creating tokens with UID: {}, PID: null, and CID: null.", credentials.getUid());
         Tokens tokens = tokenService.createTokens(credentials.getUid(), null, null);
 
-        logger.info("Returning tokens: {}.", tokens);
+        logger.info("Responding with tokens: {}.", tokens);
         return tokens;
     }
 
