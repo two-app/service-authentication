@@ -26,7 +26,6 @@ public class CredentialsController implements AuthenticationServiceContract {
     @Override
     public Tokens storeCredentialsAndGenerateTokens(@NotNull(message = "You must provide credentials.") User.Credentials credentials) {
         logger.info("[POST] /credentials UID: " + credentials.getUid() + ".");
-        logger.debug("User Credentials: " + credentials);
         credentialsService.storeCredentials(credentials);
 
         logger.info("Creating tokens with UID: '" + credentials.getUid() + "', PID: null, Couple ID: null.");
