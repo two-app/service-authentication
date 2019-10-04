@@ -26,9 +26,9 @@ public class TokensController {
 
     @GetMapping(path="/tokens")
     public Tokens getTokens(
-            @RequestHeader("uid") @Min(value = 1, message = "User ID must be greater than 0.") int uid,
-            @RequestHeader(value = "pid", required = false) @Min(value = 1, message = "Partner ID must be greater than 0.") Integer pid,
-            @RequestHeader(value = "cid", required = false) @Min(value = 1, message = "Couple ID must be greater than 0.") Integer cid
+            @RequestHeader("uid") @Min(value = 1, message = "UID must be greater than 0.") int uid,
+            @RequestHeader(value = "pid", required = false) @Min(value = 1, message = "PID must be greater than 0.") Integer pid,
+            @RequestHeader(value = "cid", required = false) @Min(value = 1, message = "CID must be greater than 0.") Integer cid
     ) {
         logger.info("Creating tokens with UID: {}, PID: {}, and CID: {}.", uid, pid, cid);
         Tokens tokens = this.tokenService.createTokens(uid, pid, cid);

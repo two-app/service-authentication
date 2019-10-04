@@ -41,21 +41,21 @@ class TokensControllerTest {
     void invalidUID_BadRequest() throws Exception {
         mvc.perform(get(path).header("uid", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("User ID must be greater than 0."));
+                .andExpect(jsonPath("$.errors[0]").value("UID must be greater than 0."));
     }
 
     @Test
     void invalidPID_BadRequest() throws Exception {
         mvc.perform(get(path).header("uid", 1).header("pid", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("Partner ID must be greater than 0."));
+                .andExpect(jsonPath("$.errors[0]").value("PID must be greater than 0."));
     }
 
     @Test
     void invalidCID_BadRequest() throws Exception {
         mvc.perform(get(path).header("uid", 1).header("cid", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("Couple ID must be greater than 0."));
+                .andExpect(jsonPath("$.errors[0]").value("CID must be greater than 0."));
     }
 
     @Test

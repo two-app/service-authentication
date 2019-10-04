@@ -20,8 +20,8 @@ public class TokenService {
 
     /**
      * @param uid who the token will belong to.
-     * @param pid optional partner id. If this is not present the user will receive a connect token.
-     * @param cid optional couple id, compulsory if the partner id is present (and vice-versa).
+     * @param pid optional PID. If this is not present the user will receive a connect token.
+     * @param cid optional CID, compulsory if the PID is present (and vice-versa).
      * @return a Tokens object.
      * @throws BadRequestException if the pid or cid is provided, but the other is not present.
      */
@@ -29,7 +29,7 @@ public class TokenService {
         logger.info("Creating tokens with UID: {}, PID: {}, and CID: {}.", uid, pid, cid);
         if ((pid != null && cid == null) || pid == null && cid != null) {
             logger.warn("Either PID or CID is present and the other is missing.");
-            throw new BadRequestException("Both partner ID and couple ID must be provided.");
+            throw new BadRequestException("Both PID and CID must be provided.");
         }
 
         String refreshToken = this.refreshTokenGenerator.createRefreshToken(uid);
