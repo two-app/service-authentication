@@ -31,35 +31,35 @@ class TokensControllerTest {
     private final String path = "/tokens";
 
     @Test
-    void missingUserId_BadRequest() throws Exception {
+    void missingUID_BadRequest() throws Exception {
         mvc.perform(get(path))
                 .andExpect(status().isBadRequest())
-                .andExpect(status().reason("Missing request header 'userId' for method parameter of type int"));
+                .andExpect(status().reason("Missing request header 'uid' for method parameter of type int"));
     }
 
     @Test
-    void invalidUserId_BadRequest() throws Exception {
-        mvc.perform(get(path).header("userId", 0))
+    void invalidUID_BadRequest() throws Exception {
+        mvc.perform(get(path).header("uid", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("User ID must be greater than 0."));
+                .andExpect(jsonPath("$.errors[0]").value("UID must be greater than 0."));
     }
 
     @Test
-    void invalidPartnerId_BadRequest() throws Exception {
-        mvc.perform(get(path).header("userId", 1).header("partnerId", 0))
+    void invalidPID_BadRequest() throws Exception {
+        mvc.perform(get(path).header("uid", 1).header("pid", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("Partner ID must be greater than 0."));
+                .andExpect(jsonPath("$.errors[0]").value("PID must be greater than 0."));
     }
 
     @Test
-    void invalidCoupleId_BadRequest() throws Exception {
-        mvc.perform(get(path).header("userId", 1).header("coupleId", 0))
+    void invalidCID_BadRequest() throws Exception {
+        mvc.perform(get(path).header("uid", 1).header("cid", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("Couple ID must be greater than 0."));
+                .andExpect(jsonPath("$.errors[0]").value("CID must be greater than 0."));
     }
 
     @Test
-    void onlyUserId_AccessTokenReturned() throws Exception {
+    void onlyUID_AccessTokenReturned() throws Exception {
         Tokens tokens = new Tokens(
                 "test.refresh.token",
                 "test.access.token"
@@ -67,7 +67,7 @@ class TokensControllerTest {
 
         when(tokenService.createTokens(1, null, null)).thenReturn(tokens);
 
-        mvc.perform(get(path).header("userId", 1))
+        mvc.perform(get(path).header("uid", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.refreshToken").value("test.refresh.token"))
                 .andExpect(jsonPath("$.accessToken").value("test.access.token"));

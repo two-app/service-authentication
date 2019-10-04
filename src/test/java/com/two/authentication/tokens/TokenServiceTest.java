@@ -26,23 +26,23 @@ class TokenServiceTest {
         }
 
         @Test
-        @DisplayName("with a partner id but no couple id a BadRequestException is thrown")
+        @DisplayName("with PID but no CID a BadRequestException is thrown")
         void invalidPartnerCombo() {
             assertThatThrownBy(() -> tb.build().createTokens(1, 2, null))
                     .isInstanceOf(BadRequestException.class)
-                    .hasMessageContaining("Both partner ID and couple ID must be provided.");
+                    .hasMessageContaining("Both PID and CID must be provided.");
         }
 
         @Test
-        @DisplayName("with a couple id but no partner id a BadRequestException is thrown")
+        @DisplayName("with a CID but no PID a BadRequestException is thrown")
         void invalidCoupleCombo() {
             assertThatThrownBy(() -> tb.build().createTokens(1, null, 3))
                     .isInstanceOf(BadRequestException.class)
-                    .hasMessageContaining("Both partner ID and couple ID must be provided.");
+                    .hasMessageContaining("Both PID and CID must be provided.");
         }
 
         @Test
-        @DisplayName("with a partner id and a couple id, an access token is generated")
+        @DisplayName("with a PID and a CID, an access token is generated")
         void accessTokenGenerated() {
             TokenService tokenService = tb.whenCreateAccessTokenReturn("test").build();
 
@@ -52,7 +52,7 @@ class TokenServiceTest {
         }
 
         @Test
-        @DisplayName("with a partner id and a couple id, an access token is generated using the correct generators")
+        @DisplayName("with a PID and a CID, an access token is generated using the correct generators")
         void accessTokenGeneratorsCalledCorrectly() {
             tb.build().createTokens(1, 2, 3);
 
@@ -61,7 +61,7 @@ class TokenServiceTest {
         }
 
         @Test
-        @DisplayName("with no partner id, a connect token is generated")
+        @DisplayName("with no PID, a connect token is generated")
         void connectTokenGenerated() {
             TokenService tokenService = tb.whenCreateConnectTokenReturn("test").build();
 
@@ -71,7 +71,7 @@ class TokenServiceTest {
         }
 
         @Test
-        @DisplayName("with no partner id, a connect token is generated using the correct generators")
+        @DisplayName("with no PID, a connect token is generated using the correct generators")
         void connectTokenGeneratorsCalledCorrectly() {
             tb.build().createTokens(1, null, null);
 
