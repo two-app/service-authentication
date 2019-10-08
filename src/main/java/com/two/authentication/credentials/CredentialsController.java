@@ -12,8 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
-
 @RestController
 @Validated
 @AllArgsConstructor
@@ -25,9 +23,7 @@ public class CredentialsController implements AuthenticationServiceContract {
 
     @PostMapping("/credentials")
     @Override
-    public Tokens storeCredentialsAndGenerateTokens(
-            @NotNull(message = "You must provide credentials.") User.WithCredentials user
-    ) {
+    public Tokens storeCredentialsAndGenerateTokens(User.WithCredentials user) {
         logger.info("Storing credentials for UID: {}.", user.getUser().getUid());
         credentialsService.storeCredentials(user);
 
@@ -38,19 +34,27 @@ public class CredentialsController implements AuthenticationServiceContract {
         return tokens;
     }
 
+    @PostMapping("/authenticate")
     @Override
-    public Tokens authenticateCredentialsAndGenerateTokens(
-            @NotNull(message = "You must provide credentials.") User.WithCredentials user
-    ) {
-        boolean credentialsAreValid = credentialsService.validateCredentials(user);
+    public Tokens authenticateCredentialsAndGenerateTokens(User.WithCredentials userWithCredentials) {
+        boolean credentialsAreValid = credentialsService.validateCredentials(userWithCredentials);
+        User user = userWithCredentials.getUser();
 
         if (!credentialsAreValid) {
-            logger.warn("User with UID {} provided an incorrect password.", user.getUser().getUid());
+            logger.warn("User with UID {} provided an incorrect password.", user.getUid());
             throw new BadRequestException("Incorrect password.");
         }
 
-        logger.info("Generating tokens with UID: {}, PID: {}, and CID: {}");
+        logger.info(
+                "Generating tokens with UID: {}, PID: {}, and CID: {}.",
+                user.getUid(),
+                user.getPid(),
+                user.getCid()
+        );
 
-        return null;
+        Tokens tokens = tokenService.createTokens(user.getUid(), user.getPid(), user.getCid());
+
+        logger.info("Responding with tokens: {}.", tokens);
+        return tokens;
     }
 }

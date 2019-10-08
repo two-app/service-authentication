@@ -5,6 +5,6 @@ import lombok.Value;
 import java.util.List;
 
 @Value
-class ErrorResponse {
+public class ErrorResponse {
     private final List<String> errors;
 }
