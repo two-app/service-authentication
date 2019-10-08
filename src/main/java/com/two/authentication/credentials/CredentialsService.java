@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -20,12 +22,12 @@ public class CredentialsService {
     private static final Logger logger = LoggerFactory.getLogger(CredentialsService.class);
 
     /**
-     * @param credentials to encode and store.
+     * @param user with credentials to encode and store.
      * @throws BadRequestException if the credentials uid already exists.
      */
-    void storeCredentials(User.Credentials credentials) throws BadRequestException {
-        String encodedPassword = this.passwordEncoder.encode(credentials.getRawPassword());
-        EncodedCredentials encodedCredentials = new EncodedCredentials(credentials.getUid(), encodedPassword);
+    void storeCredentials(User.WithCredentials user) throws BadRequestException {
+        String encodedPassword = this.passwordEncoder.encode(user.getPassword());
+        EncodedCredentials encodedCredentials = new EncodedCredentials(user.getUser().getUid(), encodedPassword);
         logger.info("Encoded credentials.");
 
         try {
@@ -37,16 +39,28 @@ public class CredentialsService {
         }
     }
 
-    Optional<EncodedCredentials> getCredentials(int uid) {
-        logger.info("Retrieving credentials for UID: " + uid);
+    /**
+     * @param user with credentials to encode and compare.
+     * @return true if the users credentials are equal to those stored.
+     * @throws ResponseStatusException if the user does not exist. The client requesting this validation should have
+     *                                 the UID from the users service. If this is not present, the data is mismatched.
+     */
+    boolean validateCredentials(User.WithCredentials user) throws ResponseStatusException {
+        int uid = user.getUser().getUid();
+
+        logger.info("Validating credentials for UID {}.", uid);
         Optional<EncodedCredentials> encodedCredentials = this.credentialsDao.getCredentials(uid);
 
-        encodedCredentials.ifPresentOrElse(
-                cr -> logger.info("Credentials successfully retrieved for UID: " + cr.getUid() + "."),
-                () -> logger.info("Credentials for UID: '" + uid + "' do not exist.")
-        );
+        if (encodedCredentials.isEmpty()) {
+            logger.error("Credentials for UID {} do not exist.", uid);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "This user does not exist.");
+        }
 
-        return encodedCredentials;
+        logger.info("Credentials successfully retrieved for UID {}.", uid);
+        logger.info("Encoding the raw password and comparing it with the encoded credentials.");
+        return encodedCredentials.get().getEncodedPassword().equals(
+                passwordEncoder.encode(user.getPassword())
+        );
     }
 
 }
