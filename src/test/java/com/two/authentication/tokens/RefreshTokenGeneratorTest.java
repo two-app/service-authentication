@@ -27,8 +27,8 @@ class RefreshTokenGeneratorTest {
         }
 
         @Test
-        void hasUserIdEqualToOne() {
-            assertThat(decodedRefreshToken.getClaim("userId").asInt()).isEqualTo(1);
+        void hasUIDEqualToOne() {
+            assertThat(decodedRefreshToken.getClaim("uid").asInt()).isEqualTo(1);
         }
 
     }

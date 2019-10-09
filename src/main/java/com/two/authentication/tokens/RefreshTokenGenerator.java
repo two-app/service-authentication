@@ -18,7 +18,7 @@ public class RefreshTokenGenerator {
         logger.info("Creating Refresh token for UID: {}.", uid);
         return TwoToken.withoutExpiration()
                 .withClaim("role", "REFRESH")
-                .withClaim("userId", uid)
+                .withClaim("uid", uid)
                 .sign(algorithm);
     }
 }

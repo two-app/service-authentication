@@ -26,9 +26,9 @@ public class AccessTokenGenerator {
         logger.info("Creating Access token with UID: {}, PID: {}, and CID: {}.", uid, pid, cid);
         return TwoToken.withExpiration()
                 .withClaim("role", "ACCESS")
-                .withClaim("userId", uid)
-                .withClaim("partnerId", pid)
-                .withClaim("coupleId", cid)
+                .withClaim("uid", uid)
+                .withClaim("pid", pid)
+                .withClaim("cid", cid)
                 .sign(algorithm);
     }
 
@@ -43,7 +43,7 @@ public class AccessTokenGenerator {
 
         return TwoToken.withExpiration()
                 .withClaim("role", "ACCESS")
-                .withClaim("userId", uid)
+                .withClaim("uid", uid)
                 .withClaim("connectCode", connectCode)
                 .sign(algorithm);
     }

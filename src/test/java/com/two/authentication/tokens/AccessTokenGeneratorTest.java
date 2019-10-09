@@ -37,18 +37,18 @@ class AccessTokenGeneratorTest {
             }
 
             @Test
-            void hasUserIdEqualToOne() {
-                assertThat(decodedAccessToken.getClaim("userId").asInt()).isEqualTo(1);
+            void hasUIDEqualToOne() {
+                assertThat(decodedAccessToken.getClaim("uid").asInt()).isEqualTo(1);
             }
 
             @Test
-            void hasPartnerIdEqualToTwo() {
-                assertThat(decodedAccessToken.getClaim("partnerId").asInt()).isEqualTo(2);
+            void PIDEqualToTwo() {
+                assertThat(decodedAccessToken.getClaim("pid").asInt()).isEqualTo(2);
             }
 
             @Test
-            void hasCoupleIdEqualToThree() {
-                assertThat(decodedAccessToken.getClaim("coupleId").asInt()).isEqualTo(3);
+            void hasCIDEqualToThree() {
+                assertThat(decodedAccessToken.getClaim("cid").asInt()).isEqualTo(3);
             }
 
             @Test
@@ -82,8 +82,8 @@ class AccessTokenGeneratorTest {
 
 
             @Test
-            void hasUserIdEqualToOne() {
-                assertThat(decodedConnectToken.getClaim("userId").asInt()).isEqualTo(1);
+            void hasUIDEqualToOne() {
+                assertThat(decodedConnectToken.getClaim("uid").asInt()).isEqualTo(1);
             }
 
             @Test
