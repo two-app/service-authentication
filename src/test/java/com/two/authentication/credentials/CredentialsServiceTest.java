@@ -1,6 +1,5 @@
 package com.two.authentication.credentials;
 
-import com.two.authentication.exceptions.BadRequestException;
 import com.two.http_api.model.User;
 import dev.testbed.TestBed;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,8 +51,9 @@ class CredentialsServiceTest {
             CredentialsService credentialsService = tb.whenStoreCredentialsThrowDuplicateKeyException().build();
 
             assertThatThrownBy(() -> credentialsService.storeCredentials(userWithCredentials))
-                    .isInstanceOf(BadRequestException.class)
-                    .hasMessageContaining("This user already exists.");
+                    .isInstanceOf(ResponseStatusException.class)
+                    .hasMessageContaining("This user already exists.")
+                    .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
         }
     }
 

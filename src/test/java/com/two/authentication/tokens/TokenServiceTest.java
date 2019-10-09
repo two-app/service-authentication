@@ -1,12 +1,13 @@
 package com.two.authentication.tokens;
 
-import com.two.authentication.exceptions.BadRequestException;
 import com.two.http_api.model.Tokens;
 import dev.testbed.TestBed;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -29,16 +30,18 @@ class TokenServiceTest {
         @DisplayName("with a partner id but no couple id a BadRequestException is thrown")
         void invalidPartnerCombo() {
             assertThatThrownBy(() -> tb.build().createTokens(1, 2, null))
-                    .isInstanceOf(BadRequestException.class)
-                    .hasMessageContaining("Both partner ID and couple ID must be provided.");
+                    .isInstanceOf(ResponseStatusException.class)
+                    .hasMessageContaining("Both PID and CID must be provided.")
+                    .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
         }
 
         @Test
         @DisplayName("with a couple id but no partner id a BadRequestException is thrown")
         void invalidCoupleCombo() {
             assertThatThrownBy(() -> tb.build().createTokens(1, null, 3))
-                    .isInstanceOf(BadRequestException.class)
-                    .hasMessageContaining("Both partner ID and couple ID must be provided.");
+                    .isInstanceOf(ResponseStatusException.class)
+                    .hasMessageContaining("Both PID and CID must be provided.")
+                    .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
         }
 
         @Test

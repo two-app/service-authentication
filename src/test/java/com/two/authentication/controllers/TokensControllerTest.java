@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,21 +42,22 @@ class TokensControllerTest {
     void invalidUserId_BadRequest() throws Exception {
         mvc.perform(get(path).header("userId", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("User ID must be greater than 0."));
+                .andExpect(jsonPath("$.message").value("User ID must be greater than 0."));
     }
 
     @Test
     void invalidPartnerId_BadRequest() throws Exception {
         mvc.perform(get(path).header("userId", 1).header("partnerId", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("Partner ID must be greater than 0."));
+                .andExpect(jsonPath("$.message").value("Partner ID must be greater than 0."));
     }
 
     @Test
     void invalidCoupleId_BadRequest() throws Exception {
         mvc.perform(get(path).header("userId", 1).header("coupleId", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("Couple ID must be greater than 0."));
+                .andDo(print())
+                .andExpect(jsonPath("$.message").value("Couple ID must be greater than 0."));
     }
 
     @Test

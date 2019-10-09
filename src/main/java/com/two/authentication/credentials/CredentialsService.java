@@ -1,6 +1,5 @@
 package com.two.authentication.credentials;
 
-import com.two.authentication.exceptions.BadRequestException;
 import com.two.http_api.model.User;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -23,9 +22,9 @@ public class CredentialsService {
 
     /**
      * @param user with credentials to encode and store.
-     * @throws BadRequestException if the credentials uid already exists.
+     * @throws ResponseStatusException Bad Request if the credentials uid already exists.
      */
-    void storeCredentials(User.WithCredentials user) throws BadRequestException {
+    void storeCredentials(User.WithCredentials user) throws ResponseStatusException {
         String encodedPassword = this.passwordEncoder.encode(user.getPassword());
         EncodedCredentials encodedCredentials = new EncodedCredentials(user.getUser().getUid(), encodedPassword);
         logger.info("Encoded credentials.");
@@ -35,7 +34,7 @@ public class CredentialsService {
             logger.info("Successfully stored credentials.");
         } catch (DuplicateKeyException e) {
             logger.warn("Failed to store credentials. UID already exists.", e);
-            throw new BadRequestException("This user already exists.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This user already exists.", e);
         }
     }
 

@@ -1,8 +1,6 @@
 package com.two.authentication.credentials;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.two.authentication.exceptions.BadRequestException;
-import com.two.authentication.exceptions.ErrorResponse;
 import com.two.authentication.tokens.TokenService;
 import com.two.http_api.model.Tokens;
 import com.two.http_api.model.User;
@@ -16,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.server.ResponseStatusException;
 
-import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -66,10 +66,12 @@ public class CredentialsControllerTest {
         @Test
         @DisplayName("it should return a bad request if the credentials uid already exists")
         void uidExists() throws Exception {
-            doThrow(new BadRequestException("user exists")).when(credentialsService).storeCredentials(userWithCredentials);
+            doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "user exists")).when(credentialsService)
+                    .storeCredentials(userWithCredentials);
 
-            postCredentials(userWithCredentials).andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.errors[0]").value("user exists"));
+            postCredentials(userWithCredentials)
+                    .andExpect(status().isBadRequest())
+                    .andExpect(r -> assertThat("user exists").isEqualTo(r.getResponse().getErrorMessage()));
         }
 
         @Test
@@ -105,20 +107,17 @@ public class CredentialsControllerTest {
         @Test
         @DisplayName("it should return a bad request if the credentials are invalid")
         void invalidCredentials() throws Exception {
-            ErrorResponse errorResponse = new ErrorResponse(singletonList("Incorrect password."));
             when(credentialsService.validateCredentials(userWithCredentials)).thenReturn(false);
 
             postAuthenticate(userWithCredentials).andExpect(status().isBadRequest())
-                    .andExpect(content().bytes(om.writeValueAsBytes(errorResponse)));
+                    .andExpect(r -> assertThat("Incorrect password.").isEqualTo(r.getResponse().getErrorMessage()));
         }
 
         @Test
         @DisplayName("it should return a bad request if the request body is missing")
         void emptyBody() throws Exception {
-            ErrorResponse expectedErrorResponse = new ErrorResponse(singletonList("Badly formed HTTP request."));
-
             postAuthenticate(null).andExpect(status().isBadRequest())
-                    .andExpect(content().bytes(om.writeValueAsBytes(expectedErrorResponse)));
+                    .andExpect(jsonPath("$.message").value("Badly formed HTTP request."));
         }
 
         private ResultActions postAuthenticate(User.WithCredentials userWithCredentials) throws Exception {

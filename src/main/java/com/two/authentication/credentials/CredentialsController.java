@@ -1,6 +1,5 @@
 package com.two.authentication.credentials;
 
-import com.two.authentication.exceptions.BadRequestException;
 import com.two.authentication.tokens.TokenService;
 import com.two.http_api.api.AuthenticationServiceContract;
 import com.two.http_api.model.Tokens;
@@ -8,9 +7,13 @@ import com.two.http_api.model.User;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
 
 @RestController
 @Validated
@@ -23,7 +26,7 @@ public class CredentialsController implements AuthenticationServiceContract {
 
     @PostMapping("/credentials")
     @Override
-    public Tokens storeCredentialsAndGenerateTokens(User.WithCredentials user) {
+    public Tokens storeCredentialsAndGenerateTokens(@Valid User.WithCredentials user) {
         logger.info("Storing credentials for UID: {}.", user.getUser().getUid());
         credentialsService.storeCredentials(user);
 
@@ -42,7 +45,7 @@ public class CredentialsController implements AuthenticationServiceContract {
 
         if (!credentialsAreValid) {
             logger.warn("User with UID {} provided an incorrect password.", user.getUid());
-            throw new BadRequestException("Incorrect password.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect password.");
         }
 
         logger.info(
