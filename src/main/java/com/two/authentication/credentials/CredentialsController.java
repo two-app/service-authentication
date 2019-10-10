@@ -7,11 +7,13 @@ import com.two.http_api.model.User;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 
 @RestController
 @Validated
@@ -24,15 +26,38 @@ public class CredentialsController implements AuthenticationServiceContract {
 
     @PostMapping("/credentials")
     @Override
-    public Tokens storeCredentialsAndGenerateTokens(@NotNull(message = "You must provide credentials.") User.Credentials credentials) {
-        logger.info("Storing credentials for UID: {}.", credentials.getUid());
-        credentialsService.storeCredentials(credentials);
+    public Tokens storeCredentialsAndGenerateTokens(@Valid User.WithCredentials user) {
+        logger.info("Storing credentials for UID: {}.", user.getUser().getUid());
+        credentialsService.storeCredentials(user);
 
-        logger.info("Creating tokens with UID: {}, PID: null, and CID: null.", credentials.getUid());
-        Tokens tokens = tokenService.createTokens(credentials.getUid(), null, null);
+        logger.info("Creating tokens with UID: {}, PID: null, and CID: null.", user.getUser().getUid());
+        Tokens tokens = tokenService.createTokens(user.getUser().getUid(), null, null);
 
         logger.info("Responding with tokens: {}.", tokens);
         return tokens;
     }
 
+    @PostMapping("/authenticate")
+    @Override
+    public Tokens authenticateCredentialsAndGenerateTokens(User.WithCredentials userWithCredentials) {
+        boolean credentialsAreValid = credentialsService.validateCredentials(userWithCredentials);
+        User user = userWithCredentials.getUser();
+
+        if (!credentialsAreValid) {
+            logger.warn("User with UID {} provided an incorrect password.", user.getUid());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect password.");
+        }
+
+        logger.info(
+                "Generating tokens with UID: {}, PID: {}, and CID: {}.",
+                user.getUid(),
+                user.getPid(),
+                user.getCid()
+        );
+
+        Tokens tokens = tokenService.createTokens(user.getUid(), user.getPid(), user.getCid());
+
+        logger.info("Responding with tokens: {}.", tokens);
+        return tokens;
+    }
 }

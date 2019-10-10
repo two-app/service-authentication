@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,35 +32,36 @@ class TokensControllerTest {
     private final String path = "/tokens";
 
     @Test
-    void missingUID_BadRequest() throws Exception {
+    void missingUserId_BadRequest() throws Exception {
         mvc.perform(get(path))
                 .andExpect(status().isBadRequest())
-                .andExpect(status().reason("Missing request header 'uid' for method parameter of type int"));
+                .andExpect(status().reason("Missing request header 'userId' for method parameter of type int"));
     }
 
     @Test
-    void invalidUID_BadRequest() throws Exception {
-        mvc.perform(get(path).header("uid", 0))
+    void invalidUserId_BadRequest() throws Exception {
+        mvc.perform(get(path).header("userId", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("UID must be greater than 0."));
+                .andExpect(jsonPath("$.message").value("User ID must be greater than 0."));
     }
 
     @Test
-    void invalidPID_BadRequest() throws Exception {
-        mvc.perform(get(path).header("uid", 1).header("pid", 0))
+    void invalidPartnerId_BadRequest() throws Exception {
+        mvc.perform(get(path).header("userId", 1).header("partnerId", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("PID must be greater than 0."));
+                .andExpect(jsonPath("$.message").value("Partner ID must be greater than 0."));
     }
 
     @Test
-    void invalidCID_BadRequest() throws Exception {
-        mvc.perform(get(path).header("uid", 1).header("cid", 0))
+    void invalidCoupleId_BadRequest() throws Exception {
+        mvc.perform(get(path).header("userId", 1).header("coupleId", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("CID must be greater than 0."));
+                .andDo(print())
+                .andExpect(jsonPath("$.message").value("Couple ID must be greater than 0."));
     }
 
     @Test
-    void onlyUID_AccessTokenReturned() throws Exception {
+    void onlyUserId_AccessTokenReturned() throws Exception {
         Tokens tokens = new Tokens(
                 "test.refresh.token",
                 "test.access.token"
@@ -67,7 +69,7 @@ class TokensControllerTest {
 
         when(tokenService.createTokens(1, null, null)).thenReturn(tokens);
 
-        mvc.perform(get(path).header("uid", 1))
+        mvc.perform(get(path).header("userId", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.refreshToken").value("test.refresh.token"))
                 .andExpect(jsonPath("$.accessToken").value("test.access.token"));

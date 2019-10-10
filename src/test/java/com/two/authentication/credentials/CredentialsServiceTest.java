@@ -1,6 +1,5 @@
 package com.two.authentication.credentials;
 
-import com.two.authentication.exceptions.BadRequestException;
 import com.two.http_api.model.User;
 import dev.testbed.TestBed;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,10 +7,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -27,6 +29,9 @@ class CredentialsServiceTest {
         this.tb = new TestBuilder();
     }
 
+    private User user = new User(1, null, null, "gerry@two.com", 22, "Gerry");
+    private User.WithCredentials userWithCredentials = new User.WithCredentials(user, "rawPassword");
+
     @Nested
     class StoreCredentials {
         @Test
@@ -34,9 +39,9 @@ class CredentialsServiceTest {
         void encodesPassword() {
             CredentialsService credentialsService = tb.whenEncodePasswordReturn("encoded").build();
 
-            credentialsService.storeCredentials(new User.Credentials(1, "raw"));
+            credentialsService.storeCredentials(userWithCredentials);
 
-            verify(tb.getDependency(PasswordEncoder.class)).encode("raw");
+            verify(tb.getDependency(PasswordEncoder.class)).encode("rawPassword");
             verify(tb.getDependency(CredentialsDao.class)).storeCredentials(new EncodedCredentials(1, "encoded"));
         }
 
@@ -45,23 +50,49 @@ class CredentialsServiceTest {
         void userExists() {
             CredentialsService credentialsService = tb.whenStoreCredentialsThrowDuplicateKeyException().build();
 
-            assertThatThrownBy(() -> credentialsService.storeCredentials(new User.Credentials(1, "a")))
-                    .isInstanceOf(BadRequestException.class)
-                    .hasMessageContaining("This user already exists.");
+            assertThatThrownBy(() -> credentialsService.storeCredentials(userWithCredentials))
+                    .isInstanceOf(ResponseStatusException.class)
+                    .hasMessageContaining("This user already exists.")
+                    .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
         }
     }
 
     @Nested
-    class GetCredentials {
+    class ValidateCredentials {
         @Test
-        @DisplayName("it should return the credentials")
-        void returnsCredentials() {
-            EncodedCredentials encodedCredentials = new EncodedCredentials(1, "encoded");
-            CredentialsService credentialsService = tb.whenGetCredentialsReturn(of(encodedCredentials)).build();
+        @DisplayName("it should return true if the credentials exist and the passwords are equal")
+        void validCredentials() {
+            EncodedCredentials encodedCredentials = new EncodedCredentials(1, "encodedPass");
+            CredentialsService credentialsService = tb.whenGetCredentialsReturn(of(encodedCredentials))
+                    .whenEncodePasswordReturn("encodedPass")
+                    .build();
 
-            Optional<EncodedCredentials> storedCredentials = credentialsService.getCredentials(1);
+            boolean isCredentialsValid = credentialsService.validateCredentials(userWithCredentials);
 
-            assertThat(storedCredentials).isPresent().contains(encodedCredentials);
+            assertThat(isCredentialsValid).isTrue();
+        }
+
+        @Test
+        @DisplayName("it should return false if the credentials exist but are not equal")
+        void invalidCredentials() {
+            EncodedCredentials encodedCredentials = new EncodedCredentials(1, "encodedPass");
+            CredentialsService credentialsService = tb.whenGetCredentialsReturn(of(encodedCredentials))
+                    .whenEncodePasswordReturn("wrongEncodedPass")
+                    .build();
+
+            boolean isCredentialsValid = credentialsService.validateCredentials(userWithCredentials);
+
+            assertThat(isCredentialsValid).isFalse();
+        }
+
+        @Test
+        @DisplayName("it should throw an internal server error response exception if the credentials do note xist")
+        void credentialsDoNotExist() {
+            CredentialsService credentialsService = tb.whenGetCredentialsReturn(empty()).build();
+
+            assertThatThrownBy(() -> credentialsService.validateCredentials(userWithCredentials))
+                    .isInstanceOf(ResponseStatusException.class)
+                    .hasFieldOrPropertyWithValue("status", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
