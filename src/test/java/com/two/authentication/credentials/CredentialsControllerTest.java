@@ -23,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -36,13 +35,14 @@ public class CredentialsControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private ObjectMapper om;
+
     @MockBean
     private CredentialsService credentialsService;
 
     @MockBean
     private TokenService tokenService;
-
-    private final ObjectMapper om = new ObjectMapper();
 
     private LocalDate dob = LocalDate.parse("1997-08-21");
     private User user = new User(12, null, null, "gerry@two.com", dob, "Gerry");
@@ -75,7 +75,7 @@ public class CredentialsControllerTest {
 
             postCredentials(userWithCredentials)
                     .andExpect(status().isBadRequest())
-                    .andExpect(r -> assertThat("user exists").isEqualTo(r.getResponse().getErrorMessage()));
+                    .andExpect(jsonPath("$.message").value("user exists"));
         }
 
         @Test
@@ -114,7 +114,7 @@ public class CredentialsControllerTest {
             when(credentialsService.validateCredentials(userWithCredentials)).thenReturn(false);
 
             postAuthenticate(userWithCredentials).andExpect(status().isBadRequest())
-                    .andExpect(r -> assertThat("Incorrect password.").isEqualTo(r.getResponse().getErrorMessage()));
+                    .andExpect(jsonPath("$.message").value("Incorrect password."));
         }
 
         @Test
