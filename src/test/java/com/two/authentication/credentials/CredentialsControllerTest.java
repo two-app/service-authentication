@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,7 +43,9 @@ public class CredentialsControllerTest {
     private TokenService tokenService;
 
     private final ObjectMapper om = new ObjectMapper();
-    private User user = new User(12, null, null, "gerry@two.com", 22, "Gerry");
+
+    private LocalDate dob = LocalDate.parse("1997-08-21");
+    private User user = new User(12, null, null, "gerry@two.com", dob, "Gerry");
     private User.WithCredentials userWithCredentials = new User.WithCredentials(user, "rawPassword");
 
     @AfterEach
