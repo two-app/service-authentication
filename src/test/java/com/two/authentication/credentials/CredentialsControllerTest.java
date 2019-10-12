@@ -125,11 +125,41 @@ public class CredentialsControllerTest {
         }
 
         private ResultActions postAuthenticate(User.WithCredentials userWithCredentials) throws Exception {
-            return mvc.perform(
-                    post("/authenticate")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .content(om.writeValueAsBytes(userWithCredentials))
+            return mvc.perform(post("/authenticate")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(userWithCredentials))
+            );
+        }
+    }
+
+    @Nested
+    class GetTokens {
+        @Test
+        @DisplayName("it should return tokens for a valid user")
+        void returnsTokens() throws Exception {
+            Tokens tokens = new Tokens("test-refresh-token", "test-access-token");
+            when(tokenService.createTokens(user.getUid(), user.getPid(), user.getCid())).thenReturn(tokens);
+
+            postTokens(user).andExpect(status().isOk())
+                    .andExpect(jsonPath("$.accessToken").isNotEmpty())
+                    .andExpect(jsonPath("$.refreshToken").isNotEmpty());
+
+            verify(tokenService).createTokens(user.getUid(), user.getPid(), user.getCid());
+        }
+
+        @Test
+        @DisplayName("it should return a bad request if the request body is missing")
+        void emptyBody() throws Exception {
+            postTokens(null).andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("Badly formed HTTP request."));
+        }
+
+        private ResultActions postTokens(User user) throws Exception {
+            return mvc.perform(post("/tokens")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(user))
             );
         }
     }
