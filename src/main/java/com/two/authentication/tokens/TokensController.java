@@ -1,6 +1,5 @@
-package com.two.authentication.controllers;
+package com.two.authentication.tokens;
 
-import com.two.authentication.tokens.TokenService;
 import com.two.http_api.model.Tokens;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,15 +15,15 @@ import javax.validation.constraints.Min;
 @Validated
 public class TokensController {
 
-    private final TokenService tokenService;
     private static final Logger logger = LoggerFactory.getLogger(TokensController.class);
+    private final TokenService tokenService;
 
     @Autowired
     public TokensController(TokenService tokenService) {
         this.tokenService = tokenService;
     }
 
-    @GetMapping(path="/tokens")
+    @GetMapping(path = "/tokens")
     public Tokens getTokens(
             @RequestHeader("uid") @Min(value = 1, message = "UID must be greater than 0.") int uid,
             @RequestHeader(value = "pid", required = false) @Min(value = 1, message = "PID must be greater than 0.") Integer pid,

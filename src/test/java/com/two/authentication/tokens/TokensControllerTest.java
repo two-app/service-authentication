@@ -1,6 +1,5 @@
-package com.two.authentication.controllers;
+package com.two.authentication.tokens;
 
-import com.two.authentication.tokens.TokenService;
 import com.two.http_api.model.Tokens;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,45 +22,42 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class TokensControllerTest {
 
+    private final String path = "/tokens";
     @Autowired
     private MockMvc mvc;
-
     @MockBean
     private TokenService tokenService;
 
-    private final String path = "/tokens";
-
     @Test
-    void missingUserId_BadRequest() throws Exception {
+    void missingUID_BadRequest() throws Exception {
         mvc.perform(get(path))
                 .andExpect(status().isBadRequest())
-                .andExpect(status().reason("Missing request header 'userId' for method parameter of type int"));
+                .andExpect(jsonPath("$.message").value("Missing header uid."));
     }
 
     @Test
-    void invalidUserId_BadRequest() throws Exception {
-        mvc.perform(get(path).header("userId", 0))
+    void invalidUID_BadRequest() throws Exception {
+        mvc.perform(get(path).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).header("uid", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("User ID must be greater than 0."));
+                .andExpect(jsonPath("$.message").value("UID must be greater than 0."));
     }
 
     @Test
-    void invalidPartnerId_BadRequest() throws Exception {
-        mvc.perform(get(path).header("userId", 1).header("partnerId", 0))
+    void invalidPID_BadRequest() throws Exception {
+        mvc.perform(get(path).header("uid", 1).header("pid", 0))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Partner ID must be greater than 0."));
+                .andExpect(jsonPath("$.message").value("PID must be greater than 0."));
     }
 
     @Test
-    void invalidCoupleId_BadRequest() throws Exception {
-        mvc.perform(get(path).header("userId", 1).header("coupleId", 0))
+    void invalidCID_BadRequest() throws Exception {
+        mvc.perform(get(path).header("uid", 1).header("cid", 0))
                 .andExpect(status().isBadRequest())
-                .andDo(print())
-                .andExpect(jsonPath("$.message").value("Couple ID must be greater than 0."));
+                .andExpect(jsonPath("$.message").value("CID must be greater than 0."));
     }
 
     @Test
-    void onlyUserId_AccessTokenReturned() throws Exception {
+    void onlyUID_AccessTokenReturned() throws Exception {
         Tokens tokens = new Tokens(
                 "test.refresh.token",
                 "test.access.token"
@@ -69,7 +65,7 @@ class TokensControllerTest {
 
         when(tokenService.createTokens(1, null, null)).thenReturn(tokens);
 
-        mvc.perform(get(path).header("userId", 1))
+        mvc.perform(get(path).header("uid", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.refreshToken").value("test.refresh.token"))
                 .andExpect(jsonPath("$.accessToken").value("test.access.token"));

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
@@ -29,7 +30,8 @@ class CredentialsServiceTest {
         this.tb = new TestBuilder();
     }
 
-    private User user = new User(1, null, null, "gerry@two.com", 22, "Gerry");
+    private LocalDate dob = LocalDate.parse("1997-08-21");
+    private User user = new User(1, null, null, "gerry@two.com", dob, "Gerry");
     private User.WithCredentials userWithCredentials = new User.WithCredentials(user, "rawPassword");
 
     @Nested
