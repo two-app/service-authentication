@@ -67,6 +67,7 @@ class CredentialsServiceTest {
             EncodedCredentials encodedCredentials = new EncodedCredentials(1, "encodedPass");
             CredentialsService credentialsService = tb.whenGetCredentialsReturn(of(encodedCredentials))
                     .whenEncodePasswordReturn("encodedPass")
+                    .whenComparePasswordsReturn(true)
                     .build();
 
             boolean isCredentialsValid = credentialsService.validateCredentials(userWithCredentials);
@@ -116,6 +117,11 @@ class CredentialsServiceTest {
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         TestBuilder whenGetCredentialsReturn(Optional<EncodedCredentials> encodedCredentials) {
             when(getDependency(CredentialsDao.class).getCredentials(anyInt())).thenReturn(encodedCredentials);
+            return this;
+        }
+
+        TestBuilder whenComparePasswordsReturn(boolean match) {
+            when(getDependency(PasswordEncoder.class).matches(anyString(), anyString())).thenReturn(match);
             return this;
         }
     }

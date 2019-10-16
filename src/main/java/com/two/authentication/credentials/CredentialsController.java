@@ -60,4 +60,11 @@ public class CredentialsController implements AuthenticationServiceContract {
         logger.info("Responding with tokens: {}.", tokens);
         return tokens;
     }
+
+    @PostMapping("/tokens")
+    @Override
+    public Tokens getToken(@Valid User user) {
+        logger.info("Generating tokens for UID {} with PID {} and CID {}.", user.getUid(), user.getPid(), user.getCid());
+        return tokenService.createTokens(user.getUid(), user.getPid(), user.getCid());
+    }
 }

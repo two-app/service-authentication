@@ -57,9 +57,7 @@ public class CredentialsService {
 
         logger.info("Credentials successfully retrieved for UID {}.", uid);
         logger.info("Encoding the raw password and comparing it with the encoded credentials.");
-        return encodedCredentials.get().getEncodedPassword().equals(
-                passwordEncoder.encode(user.getPassword())
-        );
+        return passwordEncoder.matches(user.getPassword(), encodedCredentials.get().getEncodedPassword());
     }
 
 }
