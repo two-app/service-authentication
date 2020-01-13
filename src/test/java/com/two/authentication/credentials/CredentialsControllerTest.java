@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.two.authentication.tokens.TokenService;
 import com.two.http_api.model.Tokens;
 import com.two.http_api.model.User;
+import com.two.http_api.model.UserWithCredentials;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,8 +21,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDate;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,9 +43,8 @@ public class CredentialsControllerTest {
     @MockBean
     private TokenService tokenService;
 
-    private LocalDate dob = LocalDate.parse("1997-08-21");
-    private User user = new User(12, null, null, "gerry@two.com", dob, "Gerry");
-    private User.WithCredentials userWithCredentials = new User.WithCredentials(user, "rawPassword");
+    private User user = User.builder().uid(12).pid(null).cid(null).firstName("Two").lastName("TwoL").build();
+    private UserWithCredentials userWithCredentials = UserWithCredentials.fromUser(user, "two@two.com", "rawPassword");
 
     @AfterEach
     void afterEach() {
@@ -84,7 +82,7 @@ public class CredentialsControllerTest {
             postCredentials(null).andExpect(status().isBadRequest());
         }
 
-        private ResultActions postCredentials(User.WithCredentials userWithCredentials) throws Exception {
+        private ResultActions postCredentials(UserWithCredentials userWithCredentials) throws Exception {
             return mvc.perform(
                     post("/credentials")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -124,7 +122,7 @@ public class CredentialsControllerTest {
                     .andExpect(jsonPath("$.message").value("Badly formed HTTP request."));
         }
 
-        private ResultActions postAuthenticate(User.WithCredentials userWithCredentials) throws Exception {
+        private ResultActions postAuthenticate(UserWithCredentials userWithCredentials) throws Exception {
             return mvc.perform(post("/authenticate")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)

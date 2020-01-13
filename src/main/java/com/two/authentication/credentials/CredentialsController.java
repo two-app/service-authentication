@@ -4,6 +4,7 @@ import com.two.authentication.tokens.TokenService;
 import com.two.http_api.api.AuthenticationServiceContract;
 import com.two.http_api.model.Tokens;
 import com.two.http_api.model.User;
+import com.two.http_api.model.UserWithCredentials;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +27,12 @@ public class CredentialsController implements AuthenticationServiceContract {
 
     @PostMapping("/credentials")
     @Override
-    public Tokens storeCredentialsAndGenerateTokens(@Valid User.WithCredentials user) {
-        logger.info("Storing credentials for UID: {}.", user.getUser().getUid());
+    public Tokens storeCredentialsAndGenerateTokens(@Valid UserWithCredentials user) {
+        logger.info("Storing credentials for UID: {}.", user.getUid());
         credentialsService.storeCredentials(user);
 
-        logger.info("Creating tokens with UID: {}, PID: null, and CID: null.", user.getUser().getUid());
-        Tokens tokens = tokenService.createTokens(user.getUser().getUid(), null, null);
+        logger.info("Creating tokens with UID: {}, PID: null, and CID: null.", user.getUid());
+        Tokens tokens = tokenService.createTokens(user.getUid(), null, null);
 
         logger.info("Responding with tokens: {}.", tokens);
         return tokens;
@@ -39,9 +40,8 @@ public class CredentialsController implements AuthenticationServiceContract {
 
     @PostMapping("/authenticate")
     @Override
-    public Tokens authenticateCredentialsAndGenerateTokens(User.WithCredentials userWithCredentials) {
-        boolean credentialsAreValid = credentialsService.validateCredentials(userWithCredentials);
-        User user = userWithCredentials.getUser();
+    public Tokens authenticateCredentialsAndGenerateTokens(UserWithCredentials user) {
+        boolean credentialsAreValid = credentialsService.validateCredentials(user);
 
         if (!credentialsAreValid) {
             logger.warn("User with UID {} provided an incorrect password.", user.getUid());
