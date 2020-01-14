@@ -1,6 +1,7 @@
 package com.two.authentication.credentials;
 
 import com.two.http_api.model.User;
+import com.two.http_api.model.UserWithCredentials;
 import dev.testbed.TestBed;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
@@ -30,9 +30,8 @@ class CredentialsServiceTest {
         this.tb = new TestBuilder();
     }
 
-    private LocalDate dob = LocalDate.parse("1997-08-21");
-    private User user = new User(1, null, null, "gerry@two.com", dob, "Gerry");
-    private User.WithCredentials userWithCredentials = new User.WithCredentials(user, "rawPassword");
+    private User user = User.builder().uid(1).pid(null).cid(null).firstName("Two").lastName("TwoL").build();
+    private UserWithCredentials userWithCredentials = UserWithCredentials.fromUser(user, "two@two.com", "rawPassword");
 
     @Nested
     class StoreCredentials {
@@ -89,7 +88,7 @@ class CredentialsServiceTest {
         }
 
         @Test
-        @DisplayName("it should throw an internal server error response exception if the credentials do note xist")
+        @DisplayName("it should throw an internal server error response exception if the credentials do not exist")
         void credentialsDoNotExist() {
             CredentialsService credentialsService = tb.whenGetCredentialsReturn(empty()).build();
 
@@ -99,7 +98,7 @@ class CredentialsServiceTest {
         }
     }
 
-    class TestBuilder extends TestBed<CredentialsService, TestBuilder> {
+    static class TestBuilder extends TestBed<CredentialsService, TestBuilder> {
         TestBuilder() {
             super(CredentialsService.class);
         }
@@ -114,7 +113,6 @@ class CredentialsServiceTest {
             return this;
         }
 
-        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         TestBuilder whenGetCredentialsReturn(Optional<EncodedCredentials> encodedCredentials) {
             when(getDependency(CredentialsDao.class).getCredentials(anyInt())).thenReturn(encodedCredentials);
             return this;

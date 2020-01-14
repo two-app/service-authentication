@@ -1,6 +1,6 @@
 package com.two.authentication.credentials;
 
-import com.two.http_api.model.User;
+import com.two.http_api.model.UserWithCredentials;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +24,9 @@ public class CredentialsService {
      * @param user with credentials to encode and store.
      * @throws ResponseStatusException Bad Request if the credentials uid already exists.
      */
-    void storeCredentials(User.WithCredentials user) throws ResponseStatusException {
+    void storeCredentials(UserWithCredentials user) throws ResponseStatusException {
         String encodedPassword = this.passwordEncoder.encode(user.getPassword());
-        EncodedCredentials encodedCredentials = new EncodedCredentials(user.getUser().getUid(), encodedPassword);
+        EncodedCredentials encodedCredentials = new EncodedCredentials(user.getUid(), encodedPassword);
         logger.info("Encoded credentials.");
 
         try {
@@ -44,8 +44,8 @@ public class CredentialsService {
      * @throws ResponseStatusException if the user does not exist. The client requesting this validation should have
      *                                 the UID from the users service. If this is not present, the data is mismatched.
      */
-    boolean validateCredentials(User.WithCredentials user) throws ResponseStatusException {
-        int uid = user.getUser().getUid();
+    boolean validateCredentials(UserWithCredentials user) throws ResponseStatusException {
+        int uid = user.getUid();
 
         logger.info("Validating credentials for UID {}.", uid);
         Optional<EncodedCredentials> encodedCredentials = this.credentialsDao.getCredentials(uid);
